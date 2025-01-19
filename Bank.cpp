@@ -1,7 +1,12 @@
 #include <iostream>
 #include <string>
-#include <stdlib.h>
-#include <cstdlib>
+
+#define RESET "\033[0m"
+#define RED "\033[31m"
+#define GREEN "\033[32m"
+#define YELLOW "\033[33m"
+#define BLUE "\033[34m"
+#define CYAN "\033[36m"
 
 using namespace std;
 
@@ -26,15 +31,15 @@ struct Account{
         int year = 1403 - birth_year;
         if ((loan == 2000 && year<18) || (loan==4000 && year<18))
         {
-            cout<<"you are baby for get this loan";
+            cout<<YELLOW<<"you are baby for get this loan"<<" "<<RESET<<endl;
         }
         
         else if ((account_type == "SALARY_ACC" && loan>5000) ||(account_type == "SAVING_ACC" && loan>5000) )
         {
-            cout<<" you can get loan less than 5000$"<<endl;
+            cout<<YELLOW<<"you can get loan less than 5000$"<<" "<<RESET<<endl;
         }else{
             account_balance+=loan;
-            cout<<"Loan Application Applied Successfully"<<endl;
+            cout<<GREEN<<"Loan Application Applied Successfully"<<" "<<RESET<<endl;
         }
         
         
@@ -48,10 +53,15 @@ void withdraw(double);
 void deposit(double);
 void profitCalculation();
 void loanRequest();
+void showProfile();
 
 int main(){
     
     int accout_type = 0;
+    int sections_controler = 1;
+    int withdraw_volum = 0;
+    int diposit_volum = 0;
+
     string account_balance = " ";
     cout<<"name : ";
     cin>>acc.name;
@@ -60,14 +70,18 @@ int main(){
     cout<<"city (default = Esfahan) : ";
     cin.ignore();
     getline(cin,acc.city);
+    if (acc.city.empty()) acc.city="Esfahan";
+
     cout<<"branch number : ";
     cin>>acc.branch_number;
     cout<<"balance bank (default = 2000$) : ";
     cin.ignore();
     getline(cin,account_balance);
     (account_balance.empty())?acc.account_balance==2000:acc.account_balance=stod(account_balance);
+
     cout<<"enter account type (0: SAVING_ACC, 1: SALARY_ACC, 2: NRI ):";
     cin>>accout_type;
+
     switch (accout_type)
     {
     case 0:
@@ -84,11 +98,40 @@ int main(){
     cout<<"birth year : ";
     cin>>acc.birth_year;
 
-    // checkAccountBalance();
-    // withdraw(1000);
-    // deposit(100.5);
-    // profitCalculation();
-    // loanRequest();
+    
+    while (sections_controler!=0)
+    {
+        cout<<BLUE<<"enter 0_6 for :  [check account balance (1) |  withdraw(2) | deposit(3) | profit calculation(4) | request for loan(5) | show profile(6) exit(0) ]"<<" "<<RESET;
+        cin>>sections_controler;
+        switch (sections_controler)
+        {
+        case 1:
+            checkAccountBalance();
+            break;
+        case 2:
+            cout<<"How much do you want to withdraw ? "<<endl;
+            cin>>withdraw_volum;
+            withdraw(withdraw_volum);
+            break;
+        case 3:
+            cout<<"How much do you want to diposit ? "<<endl;
+
+            cin>>diposit_volum;
+            deposit(diposit_volum);
+            break;
+        case 4:
+            profitCalculation();
+            break;
+        case 5:
+            loanRequest();
+            break;
+        case 6:
+            showProfile();
+            break;
+        }
+    }
+    
+
     
 }
 
@@ -103,14 +146,14 @@ void checkAccountBalance(){
         acc.account_point+=10;
         cout<<"Your bank account balance : "<<acc.account_balance<<endl;
         
-    }else cout<<"You are Very Poor"<<endl;
+    }else cout<<RED<<"You are Very Poor"<<" "<<RESET<<endl;
 }
 
 void withdraw(double withdraw_volum){
-    if(withdraw_volum>10000)cout<<"The Withdrawal Limit is $10000"<<endl;
-    else if(withdraw_volum>acc.account_balance) cout<<"Your Account Balance is NOT Enough "<<endl;
+    if(withdraw_volum>10000)cout<<YELLOW<<"The Withdrawal Limit is $10000"<<" " <<RESET<<endl;
+    else if(withdraw_volum>acc.account_balance) cout<<RED<<"Your Account Balance is NOT Enough "<<" "<<RESET<<endl;
     else {
-        cout<<"successful"<<endl;
+        cout<<GREEN<<"successful"<<" "<<RESET<<endl;
         acc.account_balance-= withdraw_volum;
         acc.account_point+=20;
     }
@@ -126,7 +169,7 @@ void deposit(double deposit_volum){
         checkAccountBalance();
     }
     else {
-        cout<<"Deposit was Made Successfully"<<endl;
+        cout<<GREEN<<"Deposit was Made Successfully"<<" "<<RESET<<endl;
         acc.account_balance+=deposit_volum;
         acc.account_point+=30;
     }
@@ -191,11 +234,22 @@ void loanRequest(){
 
                 }
                 
-            }else cout<<"You don't Have Enough Score"<<endl;
+            }else cout<<RED<<"You don't Have Enough Score"<<" "<<RESET<<endl;
             
         }
-        else cout<<"Your Credit is not Enough for This Loan"<<endl;
+        else cout<<YELLOW<<"Your Credit is not Enough for This Loan"<<" "<<RESET<<endl;
         
         
-    }else cout<<"Account Not Found"<<endl;
+    }else cout<<RED<<"Account Not Found"<<" "<<RESET<<endl;
+}
+void showProfile(){
+
+    cout<<CYAN<<"name : "<<acc.name<<" "<<RESET<<endl;
+    cout<<CYAN<<"national code : "<<acc.national_code<<" "<<RESET<<endl;
+    cout<<CYAN<<"city : "<<acc.city<<" "<<RESET<<endl;
+    cout<<CYAN<<"branch number : "<<acc.branch_number<<" "<<RESET<<endl;
+    cout<<CYAN<<"bank account balance : "<<acc.account_balance<<" "<<RESET<<endl;
+    cout<<CYAN<<"type of account : "<<acc.account_type<<" "<<RESET<<endl;
+    cout<<CYAN<<"account point : "<<acc.account_point<<"$"<<" "<<RESET<<endl;
+    cout<<CYAN<<"birth year : "<<acc.birth_year<<" "<<RESET<<endl;
 }
